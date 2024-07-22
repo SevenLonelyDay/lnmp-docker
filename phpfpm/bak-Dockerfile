@@ -1,0 +1,67 @@
+FROM php:8.1.20-fpm-alpine
+# Add www user and group
+RUN addgroup -S www && adduser -S www -G www
+# Install necessary dependencies
+RUN apk add --no-cache \
+    libzip-dev \
+    zlib-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    libxpm-dev \
+    freetype-dev \
+    openssl-dev \
+    rabbitmq-c-dev \
+    libxml2-dev \
+    curl-dev \
+    libmemcached-dev \
+    libmcrypt-dev \
+    libstdc++ \
+    librdkafka-dev \
+    autoconf \
+    g++ \
+    make \
+    openssl \
+    libjpeg \
+    libpng \
+    libwebp \
+    libxpm \
+    freetype \
+    icu-dev \
+    libzip
+
+# Install PHP extensions
+RUN docker-php-ext-install \
+    bcmath \
+    curl \
+    gd \
+    intl \
+    sockets \
+    pdo_mysql \
+    mysqli \
+    opcache \
+    zip
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Install Swoole extension
+RUN pecl install swoole && docker-php-ext-enable swoole
+
+# Install AMQP extension
+RUN pecl install amqp && docker-php-ext-enable amqp
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Clean up
+RUN apk del libzip-dev zlib-dev libjpeg-turbo-dev libpng-dev libwebp-dev libxpm-dev freetype-dev openssl-dev rabbitmq-c-dev libxml2-dev curl-dev libmemcached-dev libmcrypt-dev icu-dev autoconf g++ make
+
+# Set the working directory
+WORKDIR /usr/share/nginx/html
+
+# Expose port (if needed)
+EXPOSE 9000
+
+# Start PHP-FPM
+CMD ["php-fpm"]

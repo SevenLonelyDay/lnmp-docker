@@ -1,0 +1,8 @@
+.idea/*
+.env
+/mysql/data
+/mysql/log
+/nginx/logs
+/phpfpm/log
+/redis/logs
+/redis/data
