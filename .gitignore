@@ -1,5 +1,4 @@
 .idea/*
-.env
 /mysql/data
 /mysql/log
 /nginx/logs
